@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "ndcsp1"
+  cluster:
+    server: "given in kubeconfig file"
+
+users:
+- name: "ndcsp1"
+  user:
+    token: "given in kubeconfig"
+
+contexts:
+- name: "ndcsp1"
+  context:
+    user: "ndcsp1"
+    cluster: "ndcsp1"
+
+current-context: "ndcsp1"

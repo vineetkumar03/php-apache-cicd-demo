@@ -1,0 +1,13 @@
+#before_script:
+#  - sudo usermod -aG docker $USER
+build:
+  script:
+    - docker build -t docker.in/public/$IMAGE:$CI_COMMIT_SHA .
+    - docker login -u $USER -p $PASSWORD docker.in
+    - docker push docker.in/public/$IMAGE:$CI_COMMIT_SHA
+deploy:
+  script:
+    - sed "s/_VERSION_/$CI_COMMIT_SHA/g; s/_IMAGE_/$IMAGE/g" kubernetes.tpl.yml > kubernetes.yml; cat kubernetes.yml; echo $CI_COMMIT_SHA; echo $IMAGE;
+    - sed 's/_SERVER_/$SERVER/g; s/_TOKEN_/$TOKEN/g' demo_tpl.yml > kubeconfig.yml; cat kubeconfig.yml
+#    - kubectl --kubeconfig=kubeconfig.yml get nodes
+    - kubectl --kubeconfig=kubeconfig.yml apply -f kubernetes.yml
